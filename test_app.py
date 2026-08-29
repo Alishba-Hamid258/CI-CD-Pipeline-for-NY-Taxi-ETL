@@ -77,5 +77,4 @@ def test_total_amount_is_sum_of_components():
     )
 
 
-    result = app.transform_chunk(chunk)
-    assert all(result['total_amount'] == result['fare_amount'] + result['extra'] + result['mta_tax'] + result['tip_amount'] + result['tolls_amount'] + result['improvement_surcharge'])
+    assert all(chunk['total_amount'] == chunk['fare_amount'] + chunk['extra'] + chunk['mta_tax'] + chunk['tip_amount'] + chunk['tolls_amount'] + chunk['improvement_surcharge'])
