@@ -56,4 +56,26 @@ def test_get_engine_uses_env_vars(monkeypatch):
     monkeypatch.setattr(app, 'DB_NAME', 'testdb')
 
     engine = app.get_engine()
-    assert str(engine.url) == 'postgresql+psycopg2://testuser:***@testhost:5555/testdb'
+    assert str(engine.url) == 'postgresql+psycopg2://testuser:***@testhost:5555/testdb' 
+
+def test_total_amount_is_sum_of_components():
+    chunk = pd.DataFrame({
+        'fare_amount': [10.0, 20.0],
+        'extra': [1.0, 2.0],
+        'mta_tax': [0.5, 0.5],
+        'tip_amount': [2.0, 3.0],
+        'tolls_amount': [0.0, 1.0],
+        'improvement_surcharge': [0.3, 0.3],
+    })
+    chunk['total_amount'] = (
+        chunk['fare_amount'] +
+        chunk['extra'] +
+        chunk['mta_tax'] +
+        chunk['tip_amount'] +
+        chunk['tolls_amount'] +         
+        chunk['improvement_surcharge']
+    )
+
+
+    result = app.transform_chunk(chunk)
+    assert all(result['total_amount'] == result['fare_amount'] + result['extra'] + result['mta_tax'] + result['tip_amount'] + result['tolls_amount'] + result['improvement_surcharge'])
